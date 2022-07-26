@@ -6,11 +6,65 @@ package cmd
 
 import (
 	"os"
-
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"github.com/spf13/cobra"
+	"time"
+	"log"
 )
 
+type ZoneResults struct {
+	Result []struct {
+		ID                  string      `json:"id"`
+		Name                string      `json:"name"`
+		Status              string      `json:"status"`
+		Paused              bool        `json:"paused"`
+		Type                string      `json:"type"`
+		DevelopmentMode     int         `json:"development_mode"`
+		VerificationKey     string      `json:"verification_key,omitempty"`
+		CreatedOn           time.Time   `json:"created_on"`
+		ActivatedOn         time.Time   `json:"activated_on"`
+		Account struct {
+			ID   string `json:"id"`
+			Name string `json:"name"`
+		} `json:"account"`
+		Plan        struct {
+			ID                string `json:"id"`
+			Name              string `json:"name"`
+		} `json:"plan"`
+	} `json:"result"`
+	ResultInfo struct {
+		Page       int `json:"page"`
+		PerPage    int `json:"per_page"`
+		TotalPages int `json:"total_pages"`
+		Count      int `json:"count"`
+		TotalCount int `json:"total_count"`
+	} `json:"result_info"`
+	Success  bool          `json:"success"`
+	Errors   []interface{} `json:"errors"`
+	Messages []interface{} `json:"messages"`
+}
 
+type cred struct {
+	ApiEmail string `yaml:"API_EMAIL"`
+	ApiKey   string `yaml:"API_KEY"`
+}
+
+// Get Cloudflare API Credential
+func (c *cred) getCred() *cred {
+	homeDir, err := os.UserHomeDir()
+	yamlFilePath := homeDir + "/.flare.yaml"
+	yamlFile, err := ioutil.ReadFile(yamlFilePath)
+	if err != nil {
+		log.Printf("yamlFile.Get err #%v ", err)
+	}
+	err = yaml.Unmarshal(yamlFile, &c)
+	if err != nil {
+		log.Fatalf("Unmarshal: %v", err)
+	}
+
+	return c
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
