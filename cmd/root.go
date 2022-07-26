@@ -16,6 +16,18 @@ import (
 	"time"
 )
 
+type ZoneSettings struct {
+	Result []struct {
+		Id          string    `json:"id"`
+		Value       string    `json:"value"`
+		ModifiedOn  string    `json:"modified_on"`
+		Editable    string    `json:"editable"`
+	} `json:"result"`
+	Success  bool             `json:"success"`
+	Errors   []interface{}    `json:"errors"`
+	Messages []interface{}    `json:"messages"`
+}
+
 type ZoneResults struct {
 	Result []struct {
 		ID                  string      `json:"id"`
