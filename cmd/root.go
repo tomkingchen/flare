@@ -16,12 +16,16 @@ import (
 	"time"
 )
 
+type Client struct {
+	hc *http.Client
+}
+
 type ZoneSettings struct {
 	Result []struct {
 		Id          string    `json:"id"`
-		Value       string    `json:"value"`
-		ModifiedOn  string    `json:"modified_on"`
-		Editable    string    `json:"editable"`
+		Value       interface{}     `json:"value,string"`
+		ModifiedOn  time.Time `json:"modified_on"`
+		Editable    bool      `json:"editable"`
 	} `json:"result"`
 	Success  bool             `json:"success"`
 	Errors   []interface{}    `json:"errors"`
@@ -112,6 +116,31 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+// Generic Query API
+func getAPI(apiUrl string, responseBuffer interface{}) error {
+	var c cred
+	ApiCred := c.getCred()
+	ApiEmail := ApiCred.ApiEmail
+	ApiKey := ApiCred.ApiKey
+	req, err := http.NewRequest("GET", apiUrl, nil)
+	req.Header.Add("X-Auth-Email", ApiEmail)
+	req.Header.Add("X-Auth-Key", ApiKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Print(err.Error())
+		os.Exit(1)
+	}
+
+	responseData, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("%v", string(responseData))
+	return json.Unmarshal(responseData, &responseBuffer)
 }
 
 // Query API

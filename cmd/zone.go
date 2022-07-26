@@ -17,8 +17,15 @@ var zoneCmd = &cobra.Command{
 	Use:   "zone",
 	Short: "Get details of an individual zone",
 	Run: func(cmd *cobra.Command, args []string) {
-		
-		fmt.Println("zone called" + Id)
+		var zoneSettings ZoneSettings
+		URL := "https://api.cloudflare.com/client/v4/"
+		zoneSettingsUrl := URL + "/zones/" + Id + "/settings"
+		err := getAPI(zoneSettingsUrl, &zoneSettings)
+		if err != nil {
+			fmt.Printf("Error getting zone settings: %s/n", err.Error())
+		}else{
+			fmt.Println(zoneSettings.Result)
+		}
 	},
 }
 
