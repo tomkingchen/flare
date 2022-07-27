@@ -7,9 +7,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"os"
-	"strconv"
-	"text/tabwriter"
+	// "os"
+	// "strconv"
+	// "text/tabwriter"
 )
 
 
@@ -24,26 +24,31 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var zoneResults ZoneResults
+		// var zoneResults ZoneResults
 		URL := "https://api.cloudflare.com/client/v4/"
 		zonesUrl := URL + "/zones"
-		zoneResults.queryAPI(zonesUrl)
+		result := fetchAPI(zonesUrl)
 		
-		zones := zoneResults.Result
-		// Paginating results
-		numOfPages := zoneResults.ResultInfo.TotalPages
-		for i := 2; i <= numOfPages; i++ {
-			pageNum := strconv.Itoa(i)
-			pagedUrl := zonesUrl + "?page=" + pageNum
-			zoneResults.queryAPI(pagedUrl)
-			zones = append(zones, zoneResults.Result...)
+		if result == "" {
+			fmt.Printf("Error getting zone settings /n")
+		}else{
+			fmt.Println(result)
 		}
+		// zones := zoneResults.Result
+		// // Paginating results
+		// numOfPages := zoneResults.ResultInfo.TotalPages
+		// for i := 2; i <= numOfPages; i++ {
+		// 	pageNum := strconv.Itoa(i)
+		// 	pagedUrl := zonesUrl + "?page=" + pageNum
+		// 	zoneResults.queryAPI(pagedUrl)
+		// 	zones = append(zones, zoneResults.Result...)
+		// }
 
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		for _, zone := range zones {
-			fmt.Fprintln(w, zone.Name + "\t" + zone.ID + "\t" )
-		}
-		w.Flush()
+		// w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		// for _, zone := range zones {
+		// 	fmt.Fprintln(w, zone.Name + "\t" + zone.ID + "\t" )
+		// }
+		// w.Flush()
 	},
 }
 
