@@ -20,7 +20,8 @@ var wafCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		URL := "https://api.cloudflare.com/client/v4/"
 		if &RulesetId != nil {
-			rulesetUrl := URL + "/zones/" + Id + "/rulesets/" + RulesetId
+			rulesetUrl := URL + "zones/" + ZoneId + "/rulesets/" + RulesetId
+			fmt.Println(rulesetUrl)
 			result := fetchAPI(rulesetUrl)
 			fmt.Println(result)
 		}
@@ -34,8 +35,8 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	zoneCmd.PersistentFlags().StringVarP(&ZoneId, "id", "i", "", "Zone ID")
-	zoneCmd.Flags().StringVarP(&RulesetId, "rulesetid", "r", "", "Ruleset ID")
+	wafCmd.PersistentFlags().StringVarP(&ZoneId, "zoneid", "z", "", "Zone ID")
+	wafCmd.PersistentFlags().StringVarP(&RulesetId, "rulesetid", "r", "", "Ruleset ID")
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// wafCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

@@ -18,7 +18,7 @@ var zoneCmd = &cobra.Command{
 	Short: "Get details of an individual zone",
 	Run: func(cmd *cobra.Command, args []string) {
 		URL := "https://api.cloudflare.com/client/v4/"
-		zoneSettingsUrl := URL + "/zones/" + Id + "/settings"
+		zoneSettingsUrl := URL + "zones/" + Id + "/settings"
 		result := fetchAPI(zoneSettingsUrl)
 		fmt.Println(result)
 	},
