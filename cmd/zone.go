@@ -6,7 +6,6 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -17,14 +16,14 @@ var zoneCmd = &cobra.Command{
 	Use:   "zone",
 	Short: "Get details of an individual zone",
 	Run: func(cmd *cobra.Command, args []string) {
-		var zoneSettings ZoneSettings
 		URL := "https://api.cloudflare.com/client/v4/"
 		zoneSettingsUrl := URL + "/zones/" + Id + "/settings"
-		err := getAPI(zoneSettingsUrl, &zoneSettings)
-		if err != nil {
-			fmt.Printf("Error getting zone settings: %s/n", err.Error())
+		result := fetchAPI(zoneSettingsUrl)
+		if result == "" {
+			fmt.Printf("Error getting zone settings /n")
 		}else{
-			fmt.Println(zoneSettings.Result)
+			fmt.Println(result)
+
 		}
 	},
 }

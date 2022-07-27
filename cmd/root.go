@@ -21,12 +21,7 @@ type Client struct {
 }
 
 type ZoneSettings struct {
-	Result []struct {
-		Id          string    `json:"id"`
-		Value       interface{}     `json:"value,string"`
-		ModifiedOn  time.Time `json:"modified_on"`
-		Editable    bool      `json:"editable"`
-	} `json:"result"`
+	Result   []map[string]interface{} `json:"result"`
 	Success  bool             `json:"success"`
 	Errors   []interface{}    `json:"errors"`
 	Messages []interface{}    `json:"messages"`
@@ -119,7 +114,7 @@ func init() {
 }
 
 // Generic Query API
-func getAPI(apiUrl string, responseBuffer interface{}) error {
+func fetchAPI(apiUrl string) string {
 	var c cred
 	ApiCred := c.getCred()
 	ApiEmail := ApiCred.ApiEmail
@@ -139,8 +134,8 @@ func getAPI(apiUrl string, responseBuffer interface{}) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("%v", string(responseData))
-	return json.Unmarshal(responseData, &responseBuffer)
+	// return json.Unmarshal(responseData, &responseBuffer)
+	return string(responseData)
 }
 
 // Query API
