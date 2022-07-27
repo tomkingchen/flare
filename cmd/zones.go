@@ -30,32 +30,28 @@ to quickly create a Cobra application.`,
 		URL := "https://api.cloudflare.com/client/v4/"
 		zonesUrl := URL + "/zones"
 		result := fetchAPI(zonesUrl)
-		
-		if result == "" {
-			fmt.Printf("Error getting zone settings /n")
-		}else{
-			// Print output in table format
-			if TableOutput {
-				zoneResults := ZoneResults{}
-				json.Unmarshal([]byte(result), &zoneResults)
-				zones := zoneResults.Result
-				// Paginating results
-				numOfPages := zoneResults.ResultInfo.TotalPages
-				for i := 2; i <= numOfPages; i++ {
-					pageNum := strconv.Itoa(i)
-					pagedUrl := zonesUrl + "?page=" + pageNum
-					zoneResults.queryAPI(pagedUrl)
-					zones = append(zones, zoneResults.Result...)
-				}
 
-				w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-				for _, zone := range zones {
-					fmt.Fprintln(w, zone.Name + "\t" + zone.ID + "\t" )
-				}
-				w.Flush()
-			}else{
-				fmt.Println(result)
+		// Print output in table format
+		if TableOutput {
+			zoneResults := ZoneResults{}
+			json.Unmarshal([]byte(result), &zoneResults)
+			zones := zoneResults.Result
+			// Paginating results
+			numOfPages := zoneResults.ResultInfo.TotalPages
+			for i := 2; i <= numOfPages; i++ {
+				pageNum := strconv.Itoa(i)
+				pagedUrl := zonesUrl + "?page=" + pageNum
+				zoneResults.queryAPI(pagedUrl)
+				zones = append(zones, zoneResults.Result...)
 			}
+
+			w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+			for _, zone := range zones {
+				fmt.Fprintln(w, zone.Name + "\t" + zone.ID + "\t" )
+			}
+			w.Flush()
+		}else{
+			fmt.Println(result)
 		}
 	},
 }

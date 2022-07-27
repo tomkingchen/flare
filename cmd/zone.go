@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Zone Id
 var Id string
 
 // zoneCmd represents the zone command
@@ -19,12 +20,7 @@ var zoneCmd = &cobra.Command{
 		URL := "https://api.cloudflare.com/client/v4/"
 		zoneSettingsUrl := URL + "/zones/" + Id + "/settings"
 		result := fetchAPI(zoneSettingsUrl)
-		if result == "" {
-			fmt.Printf("Error getting zone settings /n")
-		}else{
-			fmt.Println(result)
-
-		}
+		fmt.Println(result)
 	},
 }
 
