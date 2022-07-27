@@ -5,13 +5,15 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
-	// "os"
-	// "strconv"
-	// "text/tabwriter"
+	"os"
+	"strconv"
+	"text/tabwriter"
 )
 
+var TableOutput bool
 
 // zonesCmd represents the zones command
 var zonesCmd = &cobra.Command{
@@ -32,23 +34,29 @@ to quickly create a Cobra application.`,
 		if result == "" {
 			fmt.Printf("Error getting zone settings /n")
 		}else{
-			fmt.Println(result)
-		}
-		// zones := zoneResults.Result
-		// // Paginating results
-		// numOfPages := zoneResults.ResultInfo.TotalPages
-		// for i := 2; i <= numOfPages; i++ {
-		// 	pageNum := strconv.Itoa(i)
-		// 	pagedUrl := zonesUrl + "?page=" + pageNum
-		// 	zoneResults.queryAPI(pagedUrl)
-		// 	zones = append(zones, zoneResults.Result...)
-		// }
+			// Print output in table format
+			if TableOutput {
+				zoneResults := ZoneResults{}
+				json.Unmarshal([]byte(result), &zoneResults)
+				zones := zoneResults.Result
+				// Paginating results
+				numOfPages := zoneResults.ResultInfo.TotalPages
+				for i := 2; i <= numOfPages; i++ {
+					pageNum := strconv.Itoa(i)
+					pagedUrl := zonesUrl + "?page=" + pageNum
+					zoneResults.queryAPI(pagedUrl)
+					zones = append(zones, zoneResults.Result...)
+				}
 
-		// w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		// for _, zone := range zones {
-		// 	fmt.Fprintln(w, zone.Name + "\t" + zone.ID + "\t" )
-		// }
-		// w.Flush()
+				w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+				for _, zone := range zones {
+					fmt.Fprintln(w, zone.Name + "\t" + zone.ID + "\t" )
+				}
+				w.Flush()
+			}else{
+				fmt.Println(result)
+			}
+		}
 	},
 }
 
@@ -64,4 +72,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// zonesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	zonesCmd.Flags().BoolVarP(&TableOutput, "table", "t", false, "Set output to table")
 }
