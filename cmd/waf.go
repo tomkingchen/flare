@@ -62,7 +62,8 @@ var wafCmd = &cobra.Command{
 				json.Unmarshal([]byte(result), &ruleset)
 				rules = append(rules, ruleset.Result.Rules...)
 			}
-			fmt.Println(rules)
+			j, _ := json.Marshal(rules)
+			fmt.Println(string(j))
 		}else{
 			// apiUrl = URL + "zones/" + ZoneId + "/firewall/waf/packages" + PackageId + "/rules"
 			// result := fetchAPI(apiUrl)
