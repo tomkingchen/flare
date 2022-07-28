@@ -41,7 +41,8 @@ to quickly create a Cobra application.`,
 			for i := 2; i <= numOfPages; i++ {
 				pageNum := strconv.Itoa(i)
 				pagedUrl := zonesUrl + "?page=" + pageNum
-				zoneResults.queryAPI(pagedUrl)
+				pagedResult := fetchAPI(pagedUrl)
+				json.Unmarshal([]byte(pagedResult), &zoneResults)
 				zones = append(zones, zoneResults.Result...)
 			}
 
