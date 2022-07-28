@@ -11,6 +11,9 @@ import (
 	"time"
 )
 
+// Shared variable
+var ZoneId string
+
 type Client struct {
 	hc *http.Client
 }

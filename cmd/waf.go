@@ -8,7 +8,6 @@ import (
 	"time"
 )
 
-var ZoneId string
 var UseRulesetEngine bool
 
 type WafRule struct {
