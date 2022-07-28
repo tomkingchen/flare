@@ -1,11 +1,6 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
@@ -136,30 +131,4 @@ func fetchAPI(apiUrl string) string {
 	}
 	// return json.Unmarshal(responseData, &responseBuffer)
 	return string(responseData)
-}
-
-// Query API
-func (z *ZoneResults) queryAPI(apiUrl string) *ZoneResults {
-	var c cred
-	ApiCred := c.getCred()
-	ApiEmail := ApiCred.ApiEmail
-	ApiKey := ApiCred.ApiKey
-	req, err := http.NewRequest("GET", apiUrl, nil)
-	req.Header.Add("X-Auth-Email", ApiEmail)
-	req.Header.Add("X-Auth-Key", ApiKey)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
-
-	responseData, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	json.Unmarshal([]byte(responseData), &z)
-
-	return z
 }

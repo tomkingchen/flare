@@ -1,18 +1,43 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 	"github.com/spf13/cobra"
+	"strconv"
+	"time"
 )
 
 var ZoneId string
 var UseRulesetEngine bool
+
+type WafRule struct {
+	Id           string   `json:"id"`
+	Description  string   `json:"description"`
+	Priority     string   `json:"priority"`
+	PackageId    string   `json:"package_id"`
+	Group struct {
+		Id       string   `json:"id"`
+		Name     string   `json:"name"`
+	} `json:"group"`
+	Mode         string   `json:"mode"`
+	DefaultMode  string   `json:"default_mode"`
+	AllowedModes []string `json:"allowed_modes"`
+}
+
+type WafRulesResult struct {
+	Result []WafRule
+	ResultInfo struct {
+		Page       int `json:"page"`
+		PerPage    int `json:"per_page"`
+		TotalPages int `json:"total_pages"`
+		Count      int `json:"count"`
+		TotalCount int `json:"total_count"`
+	} `json:"result_info"`
+	Success  bool          `json:"success"`
+	Errors   []interface{} `json:"errors"`
+	Messages []interface{} `json:"messages"`
+}
 
 type RulesetRule struct {
 		Id          string    `json:"id"`
@@ -51,7 +76,7 @@ var wafCmd = &cobra.Command{
 		// Predefined Cloudflare Managed WAF Rulesets 
 		rulesetIds := []string{"efb7b8c949ac4650a09736fc376e9aee", "4814384a9e5d4991b9815dcfc25d2f1f", "c2e184081120413c86c3ab7e14069605"}
 		// Predefined Cloudflare Managed Firewall rules packs
-		// packageIds := []string{"1e334934fd7ae32ad705667f8c1057aa", "c504870194831cd12c3fc0284f294abb"}
+		packageIds := []string{"1e334934fd7ae32ad705667f8c1057aa", "c504870194831cd12c3fc0284f294abb"}
 		URL := "https://api.cloudflare.com/client/v4/"
 		if UseRulesetEngine {
 			var ruleset Ruleset
@@ -65,10 +90,25 @@ var wafCmd = &cobra.Command{
 			j, _ := json.Marshal(rules)
 			fmt.Println(string(j))
 		}else{
-			// apiUrl = URL + "zones/" + ZoneId + "/firewall/waf/packages" + PackageId + "/rules"
-			// result := fetchAPI(apiUrl)
-			// fmt.Println(result)
-			fmt.Println("Use old Managed Firewall API to retrieve WAF rules")
+			// Use old WAF API to list managed firewall rules
+			var wafRules WafRulesResult
+			var rules []WafRule
+			for _, packageId := range packageIds {
+				apiUrl = URL + "zones/" + ZoneId + "/firewall/waf/packages/" + packageId + "/rules"
+				result := fetchAPI(apiUrl)
+				json.Unmarshal([]byte(result), &wafRules)
+				rules = append(rules, wafRules.Result...)
+				numOfPages := wafRules.ResultInfo.TotalPages
+				for i := 2; i <= numOfPages; i++ {
+					pageNum := strconv.Itoa(i)
+					pagedUrl := apiUrl + "?page=" + pageNum
+					pagedResult := fetchAPI(pagedUrl)
+					json.Unmarshal([]byte(pagedResult), &wafRules)
+					rules = append(rules, wafRules.Result...)
+				}
+			}
+			j, _ := json.Marshal(rules)
+			fmt.Println(string(j))
 		}
 	},
 }
