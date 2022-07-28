@@ -114,15 +114,7 @@ var wafCmd = &cobra.Command{
 
 func init() {
 	listCmd.AddCommand(wafCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
 	wafCmd.PersistentFlags().StringVarP(&ZoneId, "zoneid", "z", "", "Zone ID")
 	wafCmd.MarkPersistentFlagRequired("zoneid")
 	wafCmd.PersistentFlags().BoolVarP(&UseRulesetEngine, "ruleset", "r", false, "Use Ruleset Engine")
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// wafCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

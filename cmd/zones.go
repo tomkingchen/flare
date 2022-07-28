@@ -59,15 +59,5 @@ to quickly create a Cobra application.`,
 
 func init() {
 	listCmd.AddCommand(zonesCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// zonesCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// zonesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	zonesCmd.Flags().BoolVarP(&TableOutput, "table", "t", false, "Set output to table")
 }
