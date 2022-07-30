@@ -23,4 +23,5 @@ var zoneCmd = &cobra.Command{
 func init() {
 	getCmd.AddCommand(zoneCmd)
 	zoneCmd.PersistentFlags().StringVarP(&Id, "id", "i", "", "Zone ID")
+	zoneCmd.MarkPersistentFlagRequired("id")
 }
