@@ -52,7 +52,7 @@ var firewallCmd = &cobra.Command{
 		numOfPages := firewallRulesResult.ResultInfo.TotalPages
 		for i := 2; i <= numOfPages; i++ {
 			pageNum := strconv.Itoa(i)
-			pagedUrl := apiUrl + "?page=" + pageNum
+			pagedUrl := apiUrl + "/?page=" + pageNum
 			pagedResult := fetchAPI(pagedUrl)
 			json.Unmarshal([]byte(pagedResult), &firewallRulesResult)
 			rules = append(rules, firewallRulesResult.Result...)

@@ -25,26 +25,28 @@ type ZoneSettings struct {
 	Messages []interface{}    `json:"messages"`
 }
 
+type Zone struct {
+	ID                  string      `json:"id"`
+	Name                string      `json:"name"`
+	Status              string      `json:"status"`
+	Paused              bool        `json:"paused"`
+	Type                string      `json:"type"`
+	DevelopmentMode     int         `json:"development_mode"`
+	VerificationKey     string      `json:"verification_key,omitempty"`
+	CreatedOn           time.Time   `json:"created_on"`
+	ActivatedOn         time.Time   `json:"activated_on"`
+	Account struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"account"`
+	Plan        struct {
+		ID                string `json:"id"`
+		Name              string `json:"name"`
+	} `json:"plan"`
+}
+
 type ZoneResults struct {
-	Result []struct {
-		ID                  string      `json:"id"`
-		Name                string      `json:"name"`
-		Status              string      `json:"status"`
-		Paused              bool        `json:"paused"`
-		Type                string      `json:"type"`
-		DevelopmentMode     int         `json:"development_mode"`
-		VerificationKey     string      `json:"verification_key,omitempty"`
-		CreatedOn           time.Time   `json:"created_on"`
-		ActivatedOn         time.Time   `json:"activated_on"`
-		Account struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"account"`
-		Plan        struct {
-			ID                string `json:"id"`
-			Name              string `json:"name"`
-		} `json:"plan"`
-	} `json:"result"`
+	Result []Zone `json:"result"`
 	ResultInfo struct {
 		Page       int `json:"page"`
 		PerPage    int `json:"per_page"`

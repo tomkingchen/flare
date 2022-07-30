@@ -1,7 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -18,26 +14,20 @@ var TableOutput bool
 // zonesCmd represents the zones command
 var zonesCmd = &cobra.Command{
 	Use:   "zones",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "List Cloudflare zones",
 	Run: func(cmd *cobra.Command, args []string) {
-		// var zoneResults ZoneResults
+		var zoneResults ZoneResults
+		var zones []Zone
 		URL := "https://api.cloudflare.com/client/v4/"
 		zonesUrl := URL + "/zones"
 		result := fetchAPI(zonesUrl)
-		zoneResults := ZoneResults{}
 		json.Unmarshal([]byte(result), &zoneResults)
-		zones := zoneResults.Result
+		zones = append(zones, zoneResults.Result...)
 		// Paginating results
 		numOfPages := zoneResults.ResultInfo.TotalPages
 		for i := 2; i <= numOfPages; i++ {
 			pageNum := strconv.Itoa(i)
-			pagedUrl := zonesUrl + "?page=" + pageNum
+			pagedUrl := zonesUrl + "/?page=" + pageNum
 			pagedResult := fetchAPI(pagedUrl)
 			json.Unmarshal([]byte(pagedResult), &zoneResults)
 			zones = append(zones, zoneResults.Result...)
@@ -58,5 +48,5 @@ to quickly create a Cobra application.`,
 
 func init() {
 	listCmd.AddCommand(zonesCmd)
-	zonesCmd.Flags().BoolVarP(&TableOutput, "table", "t", false, "Set output to table")
+	zonesCmd.Flags().BoolVarP(&TableOutput, "table", "t", false, "set output to table format")
 }
